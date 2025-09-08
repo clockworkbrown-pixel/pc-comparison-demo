@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>コスパの先生 - 用途で選ぶ、あなた専用ノートPC</title>
+  <style>
+    :root{
+      --primary: #2563eb; --primary-light: #3b82f6; --primary-dark: #1d4ed8;
+      --secondary: #10b981; --secondary-light: #34d399;
+      --accent: #f59e0b; --accent-light: #fbbf24;
+      --bg: #f8fafc; --card: #ffffff; --card-hover: #f1f5f9;
+      --text: #0f172a; --text-muted: #64748b; --text-light: #94a3b8;
+      --border: #e2e8f0; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.9));
+    }
+    
+    *{box-sizing:border-box; margin:0; padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); line-height:1.6}
+    
+    /* ヘッダー */
+    .hero{background:var(--gradient-hero); color:white; padding:3rem 1rem 2rem; text-align:center; position:relative; overflow:hidden}
+    .hero::before{content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="20"><circle cx="10" cy="10" r="1.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>'); opacity:0.3}
+    .hero-content{position:relative; z-index:1; max-width:800px; margin:0 auto}
+    .hero h1{font-size:clamp(1.8rem, 4vw, 2.5rem); font-weight:800; margin-bottom:0.5rem; text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+    .hero .subtitle{font-size:1.1rem; opacity:0.95; margin-bottom:2rem}
+    .trust-indicators{display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-top:1.5rem}
+    .trust-item{display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; opacity:0.9}
+    
+    .container{max-width:1200px; margin:0 auto; padding:0 1rem}
+    
+    /* プログレス */
+    .progress-section{background:white; padding:1.5rem 0; box-shadow:var(--shadow)}
+    .progress{display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap}
+    .step{display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:2rem; background:var(--card-hover); transition:all 0.3s}
+    .step.active{background:var(--primary); color:white; transform:scale(1.05)}
+    .step.completed{background:var(--secondary); color:white}
+    .step-num{width:2rem; height:2rem; border-radius:50%; background:rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem}
+    .step.active .step-num{background:rgba(255,255,255,0.2)}
+    .step-arrow{color:var(--text-light); font-size:1.2rem}
+    
+    /* メインコンテンツ */
+    main{padding:2rem 0}
+    section{margin-bottom:3rem}
+    h2{font-size:1.5rem; font-weight:700; margin-bottom:1.5rem; color:var(--text)}
+    
+    /* 用途選択 */
+    .use-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1rem}
+    .use-card{
+      background:var(--card); border-radius:1rem; padding:1.5rem; cursor:pointer; 
+      border:2px solid var(--border); transition:all 0.3s ease;
+      background:var(--gradient-card); backdrop-filter:blur(10px);
+      position:relative; overflow:hidden;
+    }
+    .use-card::before{
+      content:''; position:absolute; top:0; left:0; right:0; height:4px; 
+      background:linear-gradient(90deg, var(--primary), var(--secondary)); 
+      transform:scaleX(0); transition:transform 0.3s; transform-origin:left;
+    }
+    .use-card:hover, .use-card.selected:hover {
+      transform:translateY(-8px); 
+      box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      border-color:var(--primary);
+    }
+    .use-card.selected {
+      border-color:var(--primary);
+      background:linear-gradient(135deg, rgba(37,99,235,0.1), rgba(59,130,246,0.05));
+    }
+    .use-card.selected::before{transform:scaleX(1)}
+    .use-icon{font-size:2.5rem; margin-bottom:1rem}
+    .use-title{font-weight:700; font-size:1.1rem; margin-bottom:0.5rem; color:var(--text)}
+    .use-desc{color:var(--text-muted); font-size:0.9rem; line-height:1.5}
+    .use-examples{margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border)}
+    .example-tag{display:inline-block; padding:0.25rem 0.75rem; background:rgba(37,99,235,0.1); color:var(--primary); border-radius:1rem; font-size:0.8rem; margin:0.25rem 0.25rem 0 0}
+    .confirm-selection-area { text-align: center; margin-top: 2rem; }
+    .confirm-btn {
+      background: var(--secondary); color: white; border: none; padding: 1rem 2.5rem;
+      border-radius: 0.75rem; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+      transition: all 0.3s; box-shadow: var(--shadow);
+    }
+    .confirm-btn:hover { background: var(--secondary-light); transform: translateY(-3px); }
+    .confirm-btn:disabled { background: var(--text-light); cursor: not-allowed; }
+
+    /* スペック表示 */
+    .spec-section{background:var(--card); border-radius:1rem; padding:2rem; margin:2rem 0; border:1px solid var(--border)}
+    .spec-header{text-align:center; margin-bottom:2rem}
+    .spec-title{font-size:1.3rem; font-weight:700; color:var(--primary); margin-bottom:0.5rem}
+    .spec-subtitle{color:var(--text-muted)}
+    .spec-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:2rem}
+    .spec-item{
+      background:linear-gradient(135deg, #f0f9ff, #e0f2fe); 
+      padding:1rem; border-radius:0.75rem; text-align:center;
+      border:1px solid rgba(59,130,246,0.2);
+    }
+    .spec-icon{font-size:1.5rem; margin-bottom:0.5rem}
+    .spec-label{font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em}
+    .spec-value{font-weight:700; font-size:1.1rem; color:var(--primary)}
+    .why-section{background:rgba(16,185,129,0.05); padding:1.5rem; border-radius:0.75rem; border-left:4px solid var(--secondary)}
+    .why-title{font-weight:700; color:var(--secondary); margin-bottom:1rem}
+    
+    /* フィルター */
+    .filters{background:var(--card); padding:1.5rem; border-radius:1rem; margin-bottom:2rem; border:1px solid var(--border)}
+    .filter-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:end}
+    .filter-item{display:flex; flex-direction:column; gap:0.5rem}
+    .filter-item label{font-size:0.9rem; color:var(--text-muted); font-weight:500}
+    .filter-input{padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:0.5rem; font-size:0.9rem}
+    .filter-checkbox{display:flex; align-items:center; gap:0.5rem}
+    .apply-btn{
+      background:var(--primary); color:white; border:none; padding:0.75rem 1.5rem; 
+      border-radius:0.5rem; font-weight:600; cursor:pointer; transition:background 0.3s;
+    }
+    .apply-btn:hover{background:var(--primary-dark)}
+    
+    /* 製品リスト */
+    .product-list{display:flex; flex-direction:column; gap:1rem}
+    .product{
+      background:var(--card); border-radius:1rem; padding:1.5rem; 
+      border:1px solid var(--border); transition:all 0.3s;
+      display:grid; grid-template-columns: 20px 120px 1fr auto; gap:1.5rem; align-items:start;
+    }
+    .product:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+    @media(max-width:768px){.product{grid-template-columns:1fr; text-align:center}}
+    
+    .compare-checkbox-container { display: flex; align-items: center; justify-content: center; height: 100%; }
+    .product-image{width:120px; height:80px; background:var(--card-hover); border-radius:0.5rem; display:flex; align-items:center; justify-content:center; color:var(--text-light)}
+    .product-info{min-width:0}
+    .product-name{font-weight:700; font-size:1rem; margin-bottom:0.5rem; color:var(--text)}
+    .product-specs{display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.5rem 0}
+    .spec-badge{padding:0.25rem 0.5rem; border-radius:1rem; font-size:0.75rem; font-weight:500}
+    .spec-ok{background:rgba(16,185,129,0.1); color:#065f46}
+    .spec-warning{background:rgba(245,158,11,0.1); color:#92400e}
+    .spec-ng{background:rgba(239,68,68,0.1); color:#991b1b}
+    .product-meta{color:var(--text-muted); font-size:0.85rem; margin-top:0.5rem}
+    .value-indicator{margin:0.5rem 0; padding:0.5rem; background:rgba(16,185,129,0.05); border-radius:0.5rem; font-size:0.85rem}
+    .value-good{color:var(--secondary)}
+    .value-average{color:var(--accent)}
+    .value-tooltip {
+      position: relative; display: inline-block; cursor: help;
+      border-bottom: 1px dotted var(--text-muted);
+    }
+    .value-tooltip .tooltip-text {
+      visibility: hidden; width: 250px; background-color: var(--text);
+      color: #fff; text-align: center; border-radius: 6px;
+      padding: 5px 10px; position: absolute; z-index: 1;
+      bottom: 125%; left: 50%; margin-left: -125px;
+      opacity: 0; transition: opacity 0.3s; font-size: 0.8rem;
+    }
+    .value-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+    
+    .product-price{text-align:right}
+    .price{font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:0.5rem}
+    .buy-btn{
+      display:inline-block; padding:0.75rem 1.5rem; 
+      background:linear-gradient(135deg, var(--primary), var(--primary-light)); 
+      color:white; text-decoration:none; border-radius:0.75rem; font-weight:600;
+      transition:all 0.3s; text-align:center;
+    }
+    .buy-btn:hover{transform:translateY(-2px); box-shadow:0 10px 15px -3px rgba(37,99,235,0.3)}
+
+    /* 比較機能 */
+    .compare-fab {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 100;
+      background: var(--accent); color: white; border: none;
+      width: 4rem; height: 4rem; border-radius: 50%;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s; transform: scale(0);
+    }
+    .compare-fab.visible { transform: scale(1); }
+    .compare-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 998;
+      display: none; align-items: center; justify-content: center;
+    }
+    .compare-modal {
+      background: white; padding: 2rem; border-radius: 1rem;
+      max-width: 90%; width: 1000px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+    }
+    .compare-modal-close {
+      position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem;
+      cursor: pointer; color: var(--text-light); border: none; background: none;
+    }
+    .compare-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    .compare-table th, .compare-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare-table th { background: var(--card-hover); }
+    .compare-table td { text-align: center; }
+    .compare-table tr th:first-child { text-align: left; }
+    
+    /* レスポンシブ */
+    @media(max-width:640px){
+      .trust-indicators{gap:1rem}
+      .trust-item{font-size:0.8rem}
+      .progress{gap:0.5rem}
+      .step{padding:0.25rem 0.75rem; font-size:0.9rem}
+      .use-grid{grid-template-columns:1fr; gap:1rem}
+      .spec-grid{grid-template-columns:repeat(2, 1fr)}
+      .filter-grid{grid-template-columns:1fr; gap:1rem}
+    }
+    
+    /* 空状態 */
+    .empty-state{text-align:center; padding:3rem 1rem; color:var(--text-muted)}
+    .empty-icon{font-size:3rem; margin-bottom:1rem; opacity:0.5}
+    
+    footer{background:var(--text); color:white; padding:2rem 0; margin-top:4rem; text-align:center}
+    .footer-content{max-width:800px; margin:0 auto}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>コスパの先生</h1>
+      <p class="subtitle">用途を選ぶだけで、あなたにピッタリのノートPCを価格順に表示</p>
+      <div class="trust-indicators">
+        <div class="trust-item"><span>✅</span><span>初心者でも安心</span></div>
+        <div class="trust-item"><span>💰</span><span>コスパ重視の厳選</span></div>
+        <div class="trust-item"><span>📊</span><span>価格妥当性を可視化</span></div>
+        <div class="trust-item"><span>🔄</span><span>毎日価格更新</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="progress-section">
+    <div class="container">
+      <div class="progress">
+        <div class="step active" id="step1"><span class="step-num">1</span><span>用途を選択</span></div>
+        <span class="step-arrow">→</span>
+        <div class="step" id="step2"><span class="step-num">2</span><span>推奨スペック確認</span></div>
+        <span class="step-arrow">→</span>
+        <div class="step" id="step3"><span class="step-num">3</span><span>製品を比較</span></div>
+        <span class="step-arrow">→</span>
+        <div class="step" id="step4"><span class="step-num">4</span><span>購入</span></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section>
+      <h2>① まず、主な用途を教えてください（複数選択可）</h2>
+      <div class="use-grid" id="useGrid">
+        </div>
+      <div id="confirmSelectionArea" class="confirm-selection-area" style="display:none;">
+        <button id="confirmBtn" class="confirm-btn">この条件でPCを探す</button>
+      </div>
+    </section>
+
+    <section id="specSection" class="spec-section" style="display:none">
+      <div class="spec-header">
+        <div class="spec-title" id="specTitle"></div>
+        <div class="spec-subtitle">あなたの用途に最適化されたスペックです</div>
+      </div>
+      <div class="spec-grid" id="specGrid"></div>
+      <div class="why-section">
+        <div class="why-title">💡 なぜこのスペックなの？</div>
+        <div id="whyExplanation"></div>
+      </div>
+    </section>
+
+    <section id="filterSection" style="display:none">
+      <h2>③ さらに条件を絞り込む（オプション）</h2>
+      <div class="filters">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>価格上限</label>
+            <input type="number" id="maxPrice" class="filter-input" placeholder="例：150000">
+          </div>
+          <div class="filter-item">
+            <label>画面サイズ</label>
+            <select id="screenSize" class="filter-input">
+              <option value="">指定なし</option>
+              <option value="13">13インチ台（持ち運び重視）</option>
+              <option value="14">14インチ台（バランス型）</option>
+              <option value="15">15インチ台以上（作業性重視）</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>重量</label>
+            <select id="weight" class="filter-input">
+              <option value="">指定なし</option>
+              <option value="1.3">1.3kg以下（超軽量）</option>
+              <option value="1.8">1.8kg以下（軽量）</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="longBattery">
+              <label for="longBattery">長時間バッテリー（10時間以上）</label>
+            </div>
+          </div>
+          <div class="filter-item">
+            <button class="apply-btn" id="applyFiltersBtn">絞り込み実行</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="productSection" style="display:none">
+      <h2>④ あなたにおすすめの製品（価格順）</h2>
+      <div id="productList" class="product-list"></div>
+    </section>
+  </main>
+  
+  <button id="compareFab" class="compare-fab">比較<br>(<span id="compareCount">0</span>)</button>
+  <div id="compareModalOverlay" class="compare-modal-overlay">
+    <div id="compareModal" class="compare-modal">
+      <button id="compareModalClose" class="compare-modal-close">×</button>
+      <h2>製品比較</h2>
+      <div id="compareTableContainer"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p>※ このサイトはプロトタイプです。価格・在庫状況は変動する場合があります。</p>
+      <p>購入前には必ず販売サイトで最新情報をご確認ください。</p>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+    
+    // --- データ定義 ---
+    // NOTE: 実運用では、これらのデータは外部APIやJSONファイルから非同期で読み込みます。
+    
+    // 用途定義
+    const USECASES = [
+      { key: 'basic', icon: '📧', title: '基本作業', desc: 'メール、ブラウジング、文書作成が中心', examples: ['メール確認', 'ネット閲覧', 'YouTube視聴', '簡単な文書作成'], specs: { cpu: 1, ram: 8, ssd: 256, gpu: false }, why: 'ウェブブラウザとOfficeソフトが同時に快適に動作するレベル。動画視聴もスムーズです。' },
+      { key: 'student', icon: '🎓', title: '学生・授業用', desc: 'レポート作成、オンライン授業、研究活動', examples: ['Word/PowerPoint', 'Zoom授業', '論文調査', '動画視聴'], specs: { cpu: 2, ram: 8, ssd: 512, gpu: false }, why: 'オンライン授業中にWordで資料を見ながらメモを取る等、マルチタスクに対応。容量も十分です。' },
+      { key: 'business', icon: '💼', title: 'ビジネス・事務', desc: 'Excel分析、会議、資料作成、マルチタスク', examples: ['複雑なExcel', 'Teams会議', 'プレゼン資料', '複数アプリ同時使用'], specs: { cpu: 2, ram: 16, ssd: 512, gpu: false }, why: '大きなExcelファイルや同時に多数のアプリを開いても快適。ビデオ会議も高品質で参加できます。' },
+      { key: 'creative', icon: '🎨', title: '軽い制作作業', desc: '写真編集、動画編集、デザイン作業', examples: ['Photoshop', 'Illustrator', 'YouTube動画編集', 'ウェブデザイン'], specs: { cpu: 3, ram: 16, ssd: 1024, gpu: false }, why: '写真・動画ファイルの処理には高性能CPUと大容量SSDが必要。メモリも多めで作業が快適になります。' },
+      { key: 'programming', icon: '💻', title: 'プログラミング', desc: 'コーディング、開発環境、仮想マシン', examples: ['Visual Studio Code', 'Docker', '仮想環境', 'Git操作'], specs: { cpu: 3, ram: 16, ssd: 512, gpu: false }, why: '開発環境やコンパイル処理には高性能CPUが必要。複数の開発ツールを同時実行するためメモリも重要です。' },
+      { key: 'gaming', icon: '🎮', title: 'ゲーミング', desc: '最新ゲーム、ストリーミング配信', examples: ['3Dゲーム', 'ライブ配信', 'VR', 'ゲーム録画'], specs: { cpu: 3, ram: 16, ssd: 1024, gpu: true }, why: '最新の3Dゲームを楽しむには専用GPU（グラフィックカード）が必須。CPUとメモリも高性能が必要です。' }
+    ];
+
+    // CPUレベル定義 (数値が大きいほど高性能)
+    const CPU_LEVELS = { 1: 'Intel Core i3 / Ryzen 3', 2: 'Intel Core i5 / Ryzen 5', 3: 'Intel Core i7 / Ryzen 7', 4: 'Apple M2/M3' };
+    const CPU_SCORES = { 'Intel i3': 1, 'Ryzen 3': 1, 'Intel i5': 2, 'Ryzen 5': 2, 'Apple M2': 3, 'Intel i7': 3, 'Ryzen 7': 3, 'Apple M3': 4 };
+
+    // サンプル製品データ (NOTE: valueScoreを削除し、動的計算するように変更)
+    const ALL_PRODUCTS = [
+      { id: 1, name: 'Lenovo ThinkPad E14 Gen 5', price: 89800, cpu: 'Ryzen 5', ram: 8, ssd: 256, gpu: false, size: 14.0, weight: 1.4, battery: 12, rating: 4.2, reviews: 156 },
+      { id: 2, name: 'HP Pavilion 15', price: 119800, cpu: 'Intel i5', ram: 16, ssd: 512, gpu: false, size: 15.6, weight: 1.7, battery: 9, rating: 4.0, reviews: 89 },
+      { id: 3, name: 'ASUS VivoBook 14', price: 134800, cpu: 'Ryzen 7', ram: 16, ssd: 512, gpu: false, size: 14.0, weight: 1.4, battery: 11, rating: 4.3, reviews: 203 },
+      { id: 4, name: 'Dell Inspiron 15 Gaming', price: 189800, cpu: 'Intel i7', ram: 16, ssd: 1024, gpu: true, size: 15.6, weight: 2.2, battery: 6, rating: 4.1, reviews: 124 },
+      { id: 5, name: 'MacBook Air 13"', price: 134800, cpu: 'Apple M2', ram: 8, ssd: 256, gpu: false, size: 13.6, weight: 1.24, battery: 18, rating: 4.6, reviews: 445 },
+      { id: 6, name: 'NEC LAVIE N13', price: 159800, cpu: 'Ryzen 7', ram: 16, ssd: 512, gpu: false, size: 13.3, weight: 0.98, battery: 15, rating: 4.5, reviews: 77 },
+      { id: 7, name: 'Fujitsu FMV LIFEBOOK', price: 105000, cpu: 'Intel i5', ram: 8, ssd: 512, gpu: false, size: 15.6, weight: 1.9, battery: 8, rating: 3.9, reviews: 112 },
+    ];
+
+    // --- グローバル変数 ---
+    let combinedUsecase = null;
+    let selectedUsecaseKeys = new Set();
+    let productsToShow = [];
+    let comparisonList = new Set();
+    
+    // --- DOM要素 ---
+    const useGrid = document.getElementById('useGrid');
+    const confirmSelectionArea = document.getElementById('confirmSelectionArea');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const specSection = document.getElementById('specSection');
+    const filterSection = document.getElementById('filterSection');
+    const productSection = document.getElementById('productSection');
+    const productList = document.getElementById('productList');
+    const compareFab = document.getElementById('compareFab');
+    const compareCount = document.getElementById('compareCount');
+    const compareModalOverlay = document.getElementById('compareModalOverlay');
+    const compareTableContainer = document.getElementById('compareTableContainer');
+
+    // --- 初期化処理 ---
+    document.addEventListener('DOMContentLoaded', initialize);
+
+    function initialize() {
+      createUsecaseCards();
+      setupEventListeners();
+    }
+    
+    function setupEventListeners() {
+      confirmBtn.addEventListener('click', handleConfirmSelection);
+      document.getElementById('applyFiltersBtn').addEventListener('click', applyFiltersAndRender);
+      compareFab.addEventListener('click', showComparisonModal);
+      document.getElementById('compareModalClose').addEventListener('click', hideComparisonModal);
+      compareModalOverlay.addEventListener('click', (e) => {
+        if (e.target === compareModalOverlay) hideComparisonModal();
+      });
+      productList.addEventListener('change', handleCompareCheckboxChange);
+    }
+    
+    // --- 用途選択ロジック (複数選択対応) ---
+    function createUsecaseCards() {
+      USECASES.forEach(usecase => {
+        const card = document.createElement('div');
+        card.className = 'use-card';
+        card.dataset.key = usecase.key;
+        card.innerHTML = `
+          <div class="use-icon">${usecase.icon}</div>
+          <div class="use-title">${usecase.title}</div>
+          <div class="use-desc">${usecase.desc}</div>
+          <div class="use-examples">
+            ${usecase.examples.map(ex => `<span class="example-tag">${ex}</span>`).join('')}
+          </div>
+        `;
+        card.addEventListener('click', () => toggleUsecaseSelection(usecase.key));
+        useGrid.appendChild(card);
+      });
+    }
+
+    function toggleUsecaseSelection(key) {
+      const card = document.querySelector(`.use-card[data-key="${key}"]`);
+      if (selectedUsecaseKeys.has(key)) {
+        selectedUsecaseKeys.delete(key);
+        card.classList.remove('selected');
+      } else {
+        selectedUsecaseKeys.add(key);
+        card.classList.add('selected');
+      }
+      
+      if (selectedUsecaseKeys.size > 0) {
+        confirmSelectionArea.style.display = 'block';
+      } else {
+        confirmSelectionArea.style.display = 'none';
+      }
+    }
+
+    function handleConfirmSelection() {
+      if (selectedUsecaseKeys.size === 0) return;
+
+      const selected = USECASES.filter(u => selectedUsecaseKeys.has(u.key));
+      
+      const maxCpu = Math.max(...selected.map(u => u.specs.cpu));
+      const maxRam = Math.max(...selected.map(u => u.specs.ram));
+      const maxSsd = Math.max(...selected.map(u => u.specs.ssd));
+      const needsGpu = selected.some(u => u.specs.gpu);
+      
+      const titles = selected.map(u => u.title).join('・');
+      const whyText = selected.map(u => u.why).join('\n');
+
+      combinedUsecase = {
+        title: titles,
+        specs: { cpu: maxCpu, ram: maxRam, ssd: maxSsd, gpu: needsGpu },
+        why: whyText
+      };
+
+      updateProgress(2);
+      showSpecSection();
+      applyFiltersAndRender();
+      
+      specSection.style.display = 'block';
+      filterSection.style.display = 'block';
+      productSection.style.display = 'block';
+      
+      setTimeout(() => {
+        specSection.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    // --- スペック表示 ---
+    function showSpecSection() {
+      const { title, specs, why } = combinedUsecase;
+      
+      document.getElementById('specTitle').textContent = `${title}に最適なスペック`;
+      document.getElementById('specGrid').innerHTML = `
+        <div class="spec-item"><div class="spec-icon">⚙️</div><div class="spec-label">CPU</div><div class="spec-value">${CPU_LEVELS[specs.cpu]}</div></div>
+        <div class="spec-item"><div class="spec-icon">🧠</div><div class="spec-label">メモリ(RAM)</div><div class="spec-value">${specs.ram}GB</div></div>
+        <div class="spec-item"><div class="spec-icon">💾</div><div class="spec-label">ストレージ(SSD)</div><div class="spec-value">${specs.ssd >= 1024 ? (specs.ssd/1024)+'TB' : specs.ssd+'GB'}</div></div>
+        <div class="spec-item"><div class="spec-icon">🎮</div><div class="spec-label">グラフィック(GPU)</div><div class="spec-value">${specs.gpu ? '専用GPU推奨' : '内蔵GPUで十分'}</div></div>
+      `;
+      document.getElementById('whyExplanation').textContent = why;
+    }
+
+    // --- 製品フィルタリング & 表示 ---
+    function applyFiltersAndRender() {
+      const specs = combinedUsecase.specs;
+      
+      const maxPrice = Number(document.getElementById('maxPrice').value) || Infinity;
+      const screenSize = document.getElementById('screenSize').value;
+      const weight = Number(document.getElementById('weight').value) || Infinity;
+      const longBattery = document.getElementById('longBattery').checked;
+
+      productsToShow = ALL_PRODUCTS.filter(p => {
+        // 基本スペックチェック
+        if ((CPU_SCORES[p.cpu] || 0) < specs.cpu) return false;
+        if (p.ram < specs.ram) return false;
+        if (p.ssd < specs.ssd) return false;
+        if (specs.gpu && !p.gpu) return false;
+        
+        // 追加フィルター
+        if (p.price > maxPrice) return false;
+        if (screenSize) {
+          if (screenSize === '13' && p.size >= 14) return false;
+          if (screenSize === '14' && p.size >= 15) return false;
+          if (screenSize === '15' && p.size < 15) return false;
+        }
+        if (p.weight > weight) return false;
+        if (longBattery && p.battery < 10) return false;
+        
+        return true;
+      });
+      
+      productsToShow.sort((a, b) => a.price - b.price);
+      renderProducts();
+      updateProgress(3);
+    }
+
+    // --- コスパ計算ロジック ---
+    function calculateValueScore(product) {
+      const cpuPoint = (CPU_SCORES[product.cpu] || 0) * 20; // CPUの比重を重く
+      const ramPoint = product.ram;
+      const ssdPoint = product.ssd / 50;
+      const gpuPoint = product.gpu ? 30 : 0;
+      
+      const totalSpecScore = cpuPoint + ramPoint + ssdPoint + gpuPoint + product.battery;
+      const score = Math.round((totalSpecScore / product.price) * 50000);
+      return Math.min(score, 99); // スコアが100を超えないように調整
+    }
+
+    function getValueText(score) {
+      if (score >= 85) return '非常に良い';
+      if (score >= 75) return '良い';
+      if (score >= 65) return '普通';
+      return '検討の余地あり';
+    }
+
+    function getValueClass(score) {
+      return (score >= 75) ? 'value-good' : 'value-average';
+    }
+
+    // --- 製品リスト描画 ---
+    function renderProducts() {
+      if (productsToShow.length === 0) {
+        productList.innerHTML = `<div class="empty-state"><div class="empty-icon">😔</div><p>条件に合う製品が見つかりませんでした</p><p>フィルター条件を緩めて再度お試しください</p></div>`;
+        return;
+      }
+      
+      productList.innerHTML = productsToShow.map(p => {
+        const valueScore = calculateValueScore(p);
+        const isChecked = comparisonList.has(p.id.toString());
+        return `
+          <div class="product">
+            <div class="compare-checkbox-container">
+              <input type="checkbox" class="compare-checkbox" data-id="${p.id}" ${isChecked ? 'checked' : ''}>
+            </div>
+            <div class="product-image">💻</div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-specs">
+                <span class="spec-badge spec-ok">${p.cpu}</span>
+                <span class="spec-badge spec-ok">RAM ${p.ram}GB</span>
+                <span class="spec-badge spec-ok">SSD ${p.ssd >= 1024 ? (p.ssd/1024)+'TB' : p.ssd+'GB'}</span>
+              </div>
+              <div class="value-indicator ${getValueClass(valueScore)}">
+                💰 
+                <span class="value-tooltip">
+                  コスパ評価: ${getValueText(valueScore)} (${valueScore}点)
+                  <span class="tooltip-text">性能(CPU, RAM等)を点数化し、価格で割って算出。高いほどコスパが良いことを示します。</span>
+                </span>
+              </div>
+              <div class="product-meta">
+                📏 ${p.size}インチ • ⚖️ ${p.weight}kg • 🔋 ${p.battery}時間 • ⭐ ${p.rating} (${p.reviews}件)
+              </div>
+            </div>
+            <div class="product-price">
+              <div class="price">¥${p.price.toLocaleString()}</div>
+              <a href="#" class="buy-btn" onclick="handlePurchase(${p.id}); return false;">詳細・購入へ</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- 比較機能ロジック ---
+    function handleCompareCheckboxChange(event) {
+      const checkbox = event.target;
+      if (!checkbox.classList.contains('compare-checkbox')) return;
+      
+      const id = checkbox.dataset.id;
+      if (checkbox.checked) {
+        comparisonList.add(id);
+      } else {
+        comparisonList.delete(id);
+      }
+      
+      updateCompareFab();
+    }
+    
+    function updateCompareFab() {
+      const count = comparisonList.size;
+      compareCount.textContent = count;
+      if (count >= 2) {
+        compareFab.classList.add('visible');
+      } else {
+        compareFab.classList.remove('visible');
+      }
+    }
+
+    function showComparisonModal() {
+      const productsToCompare = ALL_PRODUCTS.filter(p => comparisonList.has(p.id.toString()));
+      if (productsToCompare.length < 2) return;
+      
+      const headers = productsToCompare.map(p => `<th>${p.name}</th>`).join('');
+      const rows = [
+        { label: '価格', key: 'price', format: val => `¥${val.toLocaleString()}`},
+        { label: 'コスパ評価', key: 'id', format: (id, p) => `${getValueText(calculateValueScore(p))} (${calculateValueScore(p)}点)` },
+        { label: 'CPU', key: 'cpu' },
+        { label: 'メモリ (RAM)', key: 'ram', format: val => `${val} GB` },
+        { label: 'ストレージ (SSD)', key: 'ssd', format: val => `${val >= 1024 ? (val/1024)+'TB' : val+'GB'}` },
+        { label: '画面サイズ', key: 'size', format: val => `${val}インチ` },
+        { label: '重量', key: 'weight', format: val => `${val} kg` },
+        { label: 'バッテリー', key: 'battery', format: val => `${val} 時間` },
+        { label: '評価', key: 'rating', format: (val, p) => `⭐ ${val} (${p.reviews}件)` },
+      ];
+
+      const tableBody = rows.map(row => `
+        <tr>
+          <th>${row.label}</th>
+          ${productsToCompare.map(p => {
+            const value = p[row.key];
+            const displayValue = row.format ? row.format(value, p) : value;
+            return `<td>${displayValue}</td>`
+          }).join('')}
+        </tr>
+      `).join('');
+      
+      compareTableContainer.innerHTML = `<table class="compare-table"><thead><tr><th>スペック</th>${headers}</tr></thead><tbody>${tableBody}</tbody></table>`;
+      compareModalOverlay.style.display = 'flex';
+    }
+
+    function hideComparisonModal() {
+      compareModalOverlay.style.display = 'none';
+    }
+
+    // --- その他 ---
+    function handlePurchase(productId) {
+      updateProgress(4);
+      alert('実際のサイトでは、ここで各ECサイト（Amazon、楽天等）の商品ページに遷移します。');
+    }
+
+    function updateProgress(step) {
+      document.querySelectorAll('.step').forEach((stepEl, index) => {
+        stepEl.classList.remove('active', 'completed');
+        if (index + 1 < step) stepEl.classList.add('completed');
+        else if (index + 1 === step) stepEl.classList.add('active');
+      });
+    }
+
+  </script>
+</body>
+</html>
